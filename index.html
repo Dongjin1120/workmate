@@ -1,18 +1,82 @@
+
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
+    <title>팀 협업 시간 맞추기</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 구글 맵을 표시할 div를 생성합니다. -->
+    
+
+
+    <h2>나의 일정 확인</h2>
+    <label for="start-time">시작 시간:</label>
+    <select id="start-time">
+        <option value="">시작 시간 선택</option>
+        <!-- 1부터 24까지의 시간을 option으로 추가 -->
+        <script>
+            for (let i = 0; i <= 23; i++) {
+                for (let j = 0; j <= 45; j += 15) {
+                    document.write(`<option value="${i}:${j < 10 ? '0' + j : j}">${i}:${j < 10 ? '0' + j : j}</option>`);
+                }
+            }
+        </script>
+    </select>
+    <label for="end-time">종료 시간:</label>
+    <select id="end-time">
+        <option value="">종료 시간 선택</option>
+        <!-- 1부터 24까지의 시간을 option으로 추가 -->
+        <script>
+            for (let i = 0; i <= 23; i++) {
+                for (let j = 0; j <= 45; j += 15) {
+                    document.write(`<option value="${i}:${j < 10 ? '0' + j : j}">${i}:${j < 10 ? '0' + j : j}</option>`);
+                }
+            }
+        </script>
+    </select>
+    <button onclick="checkAvailability()">일정 확인하기</button>
+    <div id="selected-time"></div>
+
+    <!-- 중복된 구간을 표시할 테이블 컨테이너 -->
+    <div id="overlap-table-container"></div>
+
+
+
+    <h2>팀원 일정</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>이름</th>
+                <th>지역</th>
+                <th>협업 가능한 시간</th>
+            </tr>
+        </thead>
+        <tbody id="schedule-body">
+            <!-- 팀원들의 협업 가능한 시간 및 지역은 JavaScript에서 동적으로 추가됩니다. -->
+        </tbody>
+    </table>
+
+    
+
+
+
+
     <div id="map"></div>
+    <ul id="country-time-list"></ul>
+    <h3>협업 가능한 시간:</h3>
+    <ul id="collaboration-time-list"></ul>
     <div id="country-time-list" class="timelist"></div>
 
-    <!-- Google Maps API 스크립트를 로드합니다. -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDee2W4WDRXXwTtGByWgQ4vqhicZydI1F4&callback=initMap"
-    async defer></script>
-
-    <!-- JavaScript 파일을 로드하여 구글 맵을 초기화합니다. -->
     <script src="main.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDee2W4WDRXXwTtGByWgQ4vqhicZydI1F4&callback=initMap"></script>
 </body>
 </html>
