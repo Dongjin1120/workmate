@@ -17,34 +17,107 @@
 <body>
     
 
+    <!-- <input type="datetime-local" id="start-time" name="start-time" step="1800">
+    <input type="datetime-local" id="end-time" name="end-time" step="1800">
+    <button onclick="checkAvailability()">일정 확인하기</button>
+    <div id="selected-time"></div> -->
+
+
+
+
+          
+
+
+
+
 
     <h2>나의 일정 확인</h2>
-    <label for="start-time">시작 시간:</label>
-    <select id="start-time">
-        <option value="">시작 시간 선택</option>
-        <!-- 1부터 24까지의 시간을 option으로 추가 -->
-        <script>
-            for (let i = 0; i <= 23; i++) {
-                for (let j = 0; j <= 45; j += 15) {
-                    document.write(`<option value="${i}:${j < 10 ? '0' + j : j}">${i}:${j < 10 ? '0' + j : j}</option>`);
-                }
-            }
-        </script>
-    </select>
-    <label for="end-time">종료 시간:</label>
-    <select id="end-time">
-        <option value="">종료 시간 선택</option>
-        <!-- 1부터 24까지의 시간을 option으로 추가 -->
-        <script>
-            for (let i = 0; i <= 23; i++) {
-                for (let j = 0; j <= 45; j += 15) {
-                    document.write(`<option value="${i}:${j < 10 ? '0' + j : j}">${i}:${j < 10 ? '0' + j : j}</option>`);
-                }
-            }
-        </script>
-    </select>
-    <button onclick="checkAvailability()">일정 확인하기</button>
-    <div id="selected-time"></div>
+<label for="start-date">시작 날짜:</label>
+<input type="date" id="start-date" name="start-date">
+<select id="start-hour">
+    <!-- 1부터 12까지의 시간을 option으로 추가 -->
+    <script>
+        for (let i = 1; i <= 12; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+        }
+    </script>
+</select>
+<select id="start-minute">
+    <option value="00">00</option>
+    <option value="30">30</option>
+</select>
+<select id="start-ampm">
+    <option value="AM">오전</option>
+    <option value="PM">오후</option>
+</select>
+<label for="end-date">종료 날짜:</label>
+<input type="date" id="end-date" name="end-date">
+<select id="end-hour">
+    <!-- 1부터 12까지의 시간을 option으로 추가 -->
+    <script>
+        for (let i = 1; i <= 12; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+        }        
+    </script>
+</select>
+<select id="end-minute">
+    <option value="00">00</option>
+    <option value="30">30</option>
+</select>
+<select id="end-ampm">
+    <option value="AM">오전</option>
+    <option value="PM">오후</option>
+</select>
+<button onclick="checkAvailability()">일정 확인하기</button>
+<div id="selected-time"></div>
+
+<script>
+
+
+    function checkAvailability() {
+        const startDate = document.getElementById('start-date').value;
+        const startHour = document.getElementById('start-hour').value;
+        const startMinute = document.getElementById('start-minute').value;
+        const startAMPM = document.getElementById('start-ampm').value;
+        const endDate = document.getElementById('end-date').value;
+        const endHour = document.getElementById('end-hour').value;
+        const endMinute = document.getElementById('end-minute').value;
+        const endAMPM = document.getElementById('end-ampm').value;
+
+        // 12시간 단위로 변환
+        const convertedStartHour = (startHour % 12) || 12; // 0시를 12로 변환
+        const convertedEndHour = (endHour % 12) || 12; // 0시를 12로 변환
+
+        // 선택된 시간대를 표시
+        const selectedTime = `선택된 시간대: ${startDate} ${convertedStartHour}:${startMinute} ${startAMPM} - ${endDate} ${convertedEndHour}:${endMinute} ${endAMPM}`;
+        document.getElementById('selected-time').textContent = selectedTime;
+
+        // 여기에 선택된 시간대를 이용하여 일정 확인하는 로직 추가
+    }
+</script>
+
+    
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    
 
     <!-- 중복된 구간을 표시할 테이블 컨테이너 -->
     <div id="overlap-table-container"></div>

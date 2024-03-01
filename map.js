@@ -101,16 +101,38 @@ function updateCollaborationTime() {
     });
 }
 
-function checkAvailability() {
-    const startTime = document.getElementById('start-time').value;
-    const endTime = document.getElementById('end-time').value;
 
-    // 선택된 시간대를 표시
-    document.getElementById('selected-time').textContent = `선택된 시간대: ${startTime} - ${endTime}`;
 
-    // 여기에 선택된 시간대를 이용하여 일정 확인하는 로직 추가
-    // 예를 들어, 특정 시간대에 팀원들이 모두 일정이 있는지 확인하고 결과를 표시하는 등의 동작을 수행
-}
+
+
+
+
+// function checkAvailability() {
+//     const startTimeInput = document.getElementById('start-time').value;
+//     const endTimeInput = document.getElementById('end-time').value;
+
+//     // 입력값을 JavaScript Date 객체로 변환
+//     const startTime = new Date(startTimeInput);
+//     const endTime = new Date(endTimeInput);
+
+//     // 분을 00 또는 30으로 제한
+//     const startMinutes = startTime.getMinutes();
+//     const endMinutes = endTime.getMinutes();
+//     startTime.setMinutes(startMinutes - (startMinutes % 30));
+//     endTime.setMinutes(endMinutes - (endMinutes % 30));
+
+//     // 오전/오후와 12시간 형식으로 변환
+//     const startTimeFormatted = startTime.toLocaleString('en-US', {hour: 'numeric', minute: '2-digit', hour12: true});
+//     const endTimeFormatted = endTime.toLocaleString('en-US', {hour: 'numeric', minute: '2-digit', hour12: true});
+
+//     // 선택된 시간대를 표시
+//     document.getElementById('selected-time').textContent = `선택된 시간대: ${startTimeFormatted} - ${endTimeFormatted}`;
+
+//     // 여기에 선택된 시간대를 이용하여 일정 확인하는 로직 추가
+//     // 예를 들어, 특정 시간대에 팀원들이 모두 일정이 있는지 확인하고 결과를 표시하는 등의 동작을 수행
+// }
+
+
 
 
 
@@ -130,28 +152,54 @@ const teammembers = [
 // 각 팀원의 협업 가능한 시간을 랜덤으로 설정합니다.
 function setRandomAvailability() {
     teammembers.forEach(member => {
-        const startTime = getRandomTime(0, 24); // 0시부터 24시 사이
-        const endTime = getRandomTime(0, 24); // 0시부터 24시 사이
-        member.availability = `${formatTimeWithMinutes(startTime)} - ${formatTimeWithMinutes(endTime)}`;
+        let startTime, endTime;
+
+        // startTime이 endTime보다 항상 시간상으로 먼저가 되도록 설정
+        do {
+            startTime = getRandomTime(0, 24); // 0시부터 24시 사이
+            endTime = getRandomTime(0, 24); // 0시부터 24시 사이
+        } while (startTime >= endTime);
+
+        member.availability = `${formatDateTime(startTime)} ~ ${formatDateTime(endTime)}`;
     });
 }
 
-// 협업 가능한 시간을 "HH:MM" 형식의 문자열로 변환합니다.
-function formatTimeWithMinutes(time) {
-    const hours = time.getHours().toString().padStart(2, '0');
-    const minutes = time.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+
+// 협업 가능한 시간을 "YYYY-MM-DD HH:MM" 형식의 문자열로 변환합니다.
+function formatDateTime(datetime) {
+    const year = datetime.getFullYear();
+    const month = (datetime.getMonth() + 1).toString().padStart(2, '0');
+    const day = datetime.getDate().toString().padStart(2, '0');
+    const hours = datetime.getHours().toString().padStart(2, '0');
+    const minutes = datetime.getMinutes().toString().padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
+
+// 랜덤한 날짜와 시간을 반환합니다.
+function getRandomTime(minHour, maxHour) {
+    const year =  2024; // 2022년부터 2030년 사이의 랜덤 년도 선택
+    const month =  3; // 1부터 12까지의 랜덤 월 선택
+    const day = 3; // 선택한 월의 일수까지의 랜덤 일 선택
+    const hour = Math.floor(Math.random() * (maxHour - minHour + 1)) + minHour; // minHour부터 maxHour까지의 랜덤 시간 선택
+    const minutes = [0, 15, 30, 45][Math.floor(Math.random() * 4)]; // 00, 15, 30, 45 중에서 랜덤 선택
+    return new Date(year, month - 1, day, hour, minutes); // 월은 0부터 시작하므로 month에서 1을 빼줌
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 // 팀원들의 협업 가능한 시간을 저장하는 배열
 let teamAvailability = [];
-
-
-
-
-
 
 
 
@@ -189,108 +237,6 @@ function updateTeamAvailabilityArray() {
 
 
 
-// 지정된 범위 내에서 랜덤한 시간을 생성합니다.
-// 지정된 범위 내에서 랜덤한 시간을 생성합니다.
-function getRandomTime(minHour, maxHour) {
-    const hour = Math.floor(Math.random() * (maxHour - minHour + 1)) + minHour; // 시간은 minHour부터 maxHour까지 중 랜덤
-    const minutesArray = [0, 15, 30, 45];
-    const minutes = minutesArray[Math.floor(Math.random() * minutesArray.length)]; // 분은 00, 15, 30, 45 중 하나로 랜덤
-    const randomTime = new Date();
-    randomTime.setHours(hour, minutes, 0, 0);
-    return randomTime;
-}
-
-
-// 시간을 "HH:MM" 형식의 문자열로 변환합니다.
-function formatTime(time) {
-    const hours = time.getHours().toString().padStart(2, '0');
-    const minutes = time.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 협업 가능한 시간을 표시하는 리스트를 업데이트합니다.
-function updateCollaborationTimeList(times, listElement) {
-    listElement.innerHTML = ""; // 기존 목록 비우기
-    times.forEach(time => {
-        const listItem = document.createElement("li");
-        listItem.textContent = time;
-        listElement.appendChild(listItem);
-    });
-}
-
-
-
-
-
-
-
-// 중복된 구간을 표시하는 함수
-function showOverlapTable(overlapRanges) {
-    // 중복된 구간을 보여줄 div 요소 생성
-    const overlapTableDiv = document.createElement('div');
-    overlapTableDiv.setAttribute('id', 'overlap-table');
-
-    // 테이블 요소 생성
-    const table = document.createElement('table');
-    const tableBody = document.createElement('tbody');
-    
-    // 테이블 헤더 생성
-    const headerRow = document.createElement('tr');
-    const headerCell = document.createElement('th');
-    headerCell.textContent = '중복된 구간';
-    headerRow.appendChild(headerCell);
-    tableBody.appendChild(headerRow);
-    
-    // 중복된 구간 추가
-    overlapRanges.forEach(range => {
-        const row = document.createElement('tr');
-        const cell = document.createElement('td');
-        cell.textContent = range;
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-    });
-
-    // 테이블에 테이블 본문 추가
-    table.appendChild(tableBody);
-    
-    // 중복된 구간을 보여줄 div에 테이블 추가
-    overlapTableDiv.appendChild(table);
-
-    // 기존의 중복 테이블을 삭제하고 새로운 중복 테이블을 추가
-    const existingOverlapTable = document.getElementById('overlap-table');
-    if (existingOverlapTable) {
-        existingOverlapTable.parentNode.removeChild(existingOverlapTable);
-    }
-    document.body.appendChild(overlapTableDiv);
-}
-
-
-
-
-
 
 
 
@@ -299,6 +245,7 @@ function init() {
     setRandomAvailability();
     addScheduleToTable();
     updateTeamAvailabilityArray();
+    
 }
 
 init(); // 초기화 함수 호출
