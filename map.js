@@ -132,8 +132,15 @@ function setRandomAvailability() {
     teammembers.forEach(member => {
         const startTime = getRandomTime(0, 24); // 0시부터 24시 사이
         const endTime = getRandomTime(0, 24); // 0시부터 24시 사이
-        member.availability = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+        member.availability = `${formatTimeWithMinutes(startTime)} - ${formatTimeWithMinutes(endTime)}`;
     });
+}
+
+// 협업 가능한 시간을 "HH:MM" 형식의 문자열로 변환합니다.
+function formatTimeWithMinutes(time) {
+    const hours = time.getHours().toString().padStart(2, '0');
+    const minutes = time.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
 }
 
 
@@ -183,15 +190,16 @@ function updateTeamAvailabilityArray() {
 
 
 // 지정된 범위 내에서 랜덤한 시간을 생성합니다.
+// 지정된 범위 내에서 랜덤한 시간을 생성합니다.
 function getRandomTime(minHour, maxHour) {
-    const startTimestamp = new Date();
-    startTimestamp.setHours(minHour, 0, 0, 0);
-    const endTimestamp = new Date();
-    endTimestamp.setHours(maxHour, 0, 0, 0);
-    const randomTimestamp = startTimestamp.getTime() + Math.random() * (endTimestamp.getTime() - startTimestamp.getTime());
-    const randomTime = new Date(randomTimestamp);
+    const hour = Math.floor(Math.random() * (maxHour - minHour + 1)) + minHour; // 시간은 minHour부터 maxHour까지 중 랜덤
+    const minutesArray = [0, 15, 30, 45];
+    const minutes = minutesArray[Math.floor(Math.random() * minutesArray.length)]; // 분은 00, 15, 30, 45 중 하나로 랜덤
+    const randomTime = new Date();
+    randomTime.setHours(hour, minutes, 0, 0);
     return randomTime;
 }
+
 
 // 시간을 "HH:MM" 형식의 문자열로 변환합니다.
 function formatTime(time) {
@@ -199,6 +207,26 @@ function formatTime(time) {
     const minutes = time.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
